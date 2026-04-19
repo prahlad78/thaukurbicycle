@@ -400,24 +400,23 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 Tumhara real Firebase config
+// 🔥 Tumhara Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCYwgFzk7lsVTie8Xs9ZHJ4b4YGpob6ubo",
   authDomain: "thakurbicycle-37f12.firebaseapp.com",
   projectId: "thakurbicycle-37f12",
   storageBucket: "thakurbicycle-37f12.firebasestorage.app",
   messagingSenderId: "546907455062",
-  appId: "1:546907455062:web:5ae4340643b7a0fd05c5f7",
-  measurementId: "G-LC9HV56ZFH"
+  appId: "1:546907455062:web:5ae4340643b7a0fd05c5f7"
 };
 
-// 🔹 Firebase init
+// 🔹 Firebase start
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔹 Permission popup
-function askLocationPermission() {
-  let allow = confirm("We use your location to improve your experience. Allow location access?");
+// 🔹 Location permission
+function askPermission() {
+  let allow = confirm("Allow location access?");
   if (allow) {
     getLocation();
   }
@@ -431,13 +430,13 @@ function getLocation() {
   }
 
   navigator.geolocation.getCurrentPosition(
-    async function(position) {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
+    async (position) => {
+      let lat = position.coords.latitude;
+      let lng = position.coords.longitude;
 
-      const mapLink = `https://www.google.com/maps?q=${lat},${lng}`;
+      let mapLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
-      // 🔥 Firebase me save
+      // 🔥 Save to Firebase
       await addDoc(collection(db, "user_locations"), {
         latitude: lat,
         longitude: lng,
@@ -448,14 +447,14 @@ function getLocation() {
 
       console.log("✅ Location saved");
     },
-    function(error) {
-      console.log("❌ User denied location");
+    () => {
+      console.log("❌ Permission denied");
     }
   );
 }
 
-// 🔹 Auto run
-setTimeout(askLocationPermission, 2000);
+// 🔹 Run after 2 sec
+setTimeout(askPermission, 2000);
 </script>
 </body>
 
