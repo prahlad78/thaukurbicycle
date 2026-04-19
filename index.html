@@ -400,29 +400,30 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 Apna Firebase config yaha paste karo
+// 🔥 Tumhara real Firebase config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
+  apiKey: "AIzaSyCYwgFzk7lsVTie8Xs9ZHJ4b4YGpob6ubo",
+  authDomain: "thakurbicycle-37f12.firebaseapp.com",
+  projectId: "thakurbicycle-37f12",
+  storageBucket: "thakurbicycle-37f12.firebasestorage.app",
+  messagingSenderId: "546907455062",
+  appId: "1:546907455062:web:5ae4340643b7a0fd05c5f7",
+  measurementId: "G-LC9HV56ZFH"
 };
 
+// 🔹 Firebase init
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔹 Custom popup (simple confirm box)
+// 🔹 Permission popup
 function askLocationPermission() {
   let allow = confirm("We use your location to improve your experience. Allow location access?");
-  
   if (allow) {
     getLocation();
   }
 }
 
-// 🔹 Get user location
+// 🔹 Get location
 function getLocation() {
   if (!navigator.geolocation) {
     alert("Geolocation not supported");
@@ -434,10 +435,9 @@ function getLocation() {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
 
-      // 🔹 Google map link
       const mapLink = `https://www.google.com/maps?q=${lat},${lng}`;
 
-      // 🔹 Firebase me save
+      // 🔥 Firebase me save
       await addDoc(collection(db, "user_locations"), {
         latitude: lat,
         longitude: lng,
@@ -446,18 +446,16 @@ function getLocation() {
         time: new Date().toLocaleString()
       });
 
-      console.log("Location saved");
+      console.log("✅ Location saved");
     },
     function(error) {
-      console.log("User denied browser location");
+      console.log("❌ User denied location");
     }
   );
 }
 
-// 🔹 Page load hone ke 2 sec baad popup dikhao
-window.onload = function() {
-  setTimeout(askLocationPermission, 2000);
-};
+// 🔹 Auto run
+setTimeout(askLocationPermission, 2000);
 </script>
 </body>
 
